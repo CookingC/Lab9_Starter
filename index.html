@@ -88,6 +88,12 @@
   </main>
 
   <script>
+    class MyError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+      }
+    }
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,11 +101,87 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try{
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      }
+      catch(error){
+        if(!isNaN(firstNum)){
+          throw error;
+        }
+        else{
+          throw new MyError("first invalid");
+        }
+      }
     });
-
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      console.log('Found an error');
+      return true;
+    }
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
-
+    
+    errorBtns[0].addEventListener("click",function(){
+      console.log("Console Log Demo");
+    });
+    errorBtns[1].addEventListener("click",function(){
+      console.error("Console Error Demo");
+    });
+    var count = 1;
+    errorBtns[2].addEventListener("click",function(){
+      console.log("Count Button " + count);
+      count++;
+    });
+    errorBtns[3].addEventListener("click",function(){
+      console.warn("Console Warn Button");
+    });
+    errorBtns[4].addEventListener("click",function(){
+      var number = 2;
+      console.assert(number == 3, {number: number, errorMsg: "This number does not equal 3"});
+    });
+    errorBtns[5].addEventListener("click",function(){
+      console.clear("Console was cleared");
+      count = 1;
+    });
+    errorBtns[6].addEventListener("click",function(){
+      console.dir(errorBtns[6]);
+    });
+    errorBtns[7].addEventListener("click",function(){
+      console.dirxml(errorBtns[7]);
+    });
+    errorBtns[8].addEventListener("click",function(){
+      console.group();
+    });
+    errorBtns[9].addEventListener("click",function(){
+      console.groupEnd();
+    });
+    errorBtns[10].addEventListener("click",function(){
+      function Course(Name, Number) {
+        this.Name = Name;
+        this.Number = Number;
+      }
+      var x = new Course("Software Engineering 1", 110);
+      var y = new Course("Software Engineering 2", 120);
+      var z = new Course("Software Engineering 3", 130);
+      console.table([x,y,z]);
+    });
+    errorBtns[11].addEventListener("click",function(){
+      console.time();
+    });
+    errorBtns[12].addEventListener("click",function(){
+      console.timeEnd();
+    });
+    errorBtns[13].addEventListener("click",function handleBtnClick(){
+      
+        function deep(){
+          function deeper(){
+            function deepest() {
+              console.trace();
+            }
+            deepest()
+          }
+          deeper();
+        }
+        deep();
+    });
     // Start your code here
     // You may move this JS to another file if you wish
   </script>
